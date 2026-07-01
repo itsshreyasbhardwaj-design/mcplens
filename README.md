@@ -133,6 +133,19 @@ mcplens replay "node my-server.js" --snapshot baseline.json
 
 Exits non-zero on any divergence, so it drops straight into CI.
 
+## Using it as a library
+
+The lint rules and connector are also exported for programmatic use — e.g. to write a custom test that asserts a server has zero lint errors:
+
+```ts
+import { connectServer, parseServerTarget, lintTools, lintResources } from "mcplens";
+
+const { client, disconnect } = await connectServer(parseServerTarget("node my-server.js"));
+const { tools } = await client.listTools();
+const findings = lintTools(tools);
+await disconnect();
+```
+
 ## How it works
 
 `mcplens` connects to your server exactly like any MCP client would, using the official [`@modelcontextprotocol/sdk`](https://github.com/modelcontextprotocol/typescript-sdk) over stdio. It doesn't modify your server or require any special instrumentation — if a real client can talk to it, `mcplens` can too.

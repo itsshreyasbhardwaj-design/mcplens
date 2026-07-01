@@ -1,0 +1,25 @@
+# Example: gate a *different* repo's own MCP server with mcplens in CI.
+#
+# This is not run by mcplens itself — copy it into an MCP server project's
+# .github/workflows/ to catch schema regressions and behavior drift before merge.
+name: MCP server checks
+
+on:
+  pull_request:
+
+jobs:
+  mcplens:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20.x
+      - run: npm ci
+      - run: npm run build --if-present
+
+      - name: Lint tool/resource schemas
+        run: npx mcplens lint "node dist/server.js" --fail-on warning
+
+      - name: Check for behavior regressions
+        run: npx mcplens replay "node dist/server.js" --snapshot ./mcplens-baseline.json

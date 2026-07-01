@@ -7,14 +7,34 @@
     "mcplens": "./dist/cli.js"
   },
   "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "files": [
-    "dist"
+    "dist",
+    "!dist/**/*.test.*",
+    "!dist/fixtures/**"
   ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shreyasbhardwaj/mcplens.git"
+  },
+  "homepage": "https://github.com/shreyasbhardwaj/mcplens#readme",
+  "bugs": {
+    "url": "https://github.com/shreyasbhardwaj/mcplens/issues"
+  },
+  "author": "Shreyas Bhardwaj",
   "scripts": {
     "build": "tsc -p tsconfig.json",
     "dev": "tsx src/cli.ts",
     "fixture:server": "tsx src/fixtures/example-server.ts",
-    "test": "node --import tsx --test src/**/*.test.ts"
+    "fixture:http-server": "tsx src/fixtures/example-http-server.ts",
+    "test": "node --import tsx --test src/**/*.test.ts",
+    "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
     "mcp",
