@@ -33,7 +33,7 @@
     "dev": "tsx src/cli.ts",
     "fixture:server": "tsx src/fixtures/example-server.ts",
     "fixture:http-server": "tsx src/fixtures/example-http-server.ts",
-    "test": "node --import tsx --test src/**/*.test.ts",
+    "test": "node --import tsx --test $(find src -name '*.test.ts')",
     "prepublishOnly": "npm run build && npm test"
   },
   "keywords": [
