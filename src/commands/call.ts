@@ -1,5 +1,5 @@
 import chalk from "chalk";
-import { connectStdio, parseServerTarget } from "../connector.js";
+import { connectServer, parseServerTarget } from "../connector.js";
 
 export type CallResult = {
   tool: string;
@@ -12,7 +12,7 @@ export type CallResult = {
 
 export async function callTool(rawTarget: string, toolName: string, argsJson: string): Promise<CallResult> {
   const target = parseServerTarget(rawTarget);
-  const { client, disconnect } = await connectStdio(target);
+  const { client, disconnect } = await connectServer(target);
 
   let args: Record<string, unknown> = {};
   if (argsJson && argsJson.trim().length > 0) {

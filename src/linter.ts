@@ -22,6 +22,7 @@ type JsonSchemaProp = {
   description?: string;
   enum?: unknown[];
   properties?: Record<string, JsonSchemaProp>;
+  items?: unknown;
 };
 
 type ResourceLike = {
@@ -29,6 +30,12 @@ type ResourceLike = {
   name?: string;
   description?: string;
   mimeType?: string;
+};
+
+type PromptLike = {
+  name: string;
+  description?: string;
+  arguments?: Array<{ name: string; description?: string; required?: boolean }>;
 };
 
 const VAGUE_NAME_RE = /^(do|run|exec|handle|process|action|thing|stuff|misc)$/i;
@@ -96,6 +103,22 @@ export function lintTools(tools: ToolLike[]): LintFinding[] {
           message: `Parameter "${propName}" on tool "${tool.name}" declares no type or enum, so any value is technically valid.`,
         });
       }
+      if (prop.type === "array" && prop.items === undefined) {
+        findings.push({
+          severity: "warning",
+          target: `${tool.name}.${propName}`,
+          rule: "array-missing-items",
+          message: `Parameter "${propName}" on tool "${tool.name}" is an array with no "items" schema, so its element type is unconstrained.`,
+        });
+      }
+      if (prop.enum && prop.enum.length === 1) {
+        findings.push({
+          severity: "info",
+          target: `${tool.name}.${propName}`,
+          rule: "enum-single-value",
+          message: `Parameter "${propName}" on tool "${tool.name}" has an enum with a single value. If it's always the same, consider dropping the parameter.`,
+        });
+      }
     }
 
     if (Object.keys(properties).length === 0 && schema?.type === "object") {
@@ -151,6 +174,31 @@ export function lintResources(resources: ResourceLike[]): LintFinding[] {
         rule: "resource-missing-mimetype",
         message: `Resource "${resource.uri}" declares no mimeType; clients may not know how to render its contents.`,
       });
+    }
+  }
+  return findings;
+}
+
+export function lintPrompts(prompts: PromptLike[]): LintFinding[] {
+  const findings: LintFinding[] = [];
+  for (const prompt of prompts) {
+    if (!prompt.description) {
+      findings.push({
+        severity: "warning",
+        target: prompt.name,
+        rule: "prompt-missing-description",
+        message: `Prompt "${prompt.name}" has no description, making it harder for a client to decide when to surface it.`,
+      });
+    }
+    for (const arg of prompt.arguments ?? []) {
+      if (!arg.description) {
+        findings.push({
+          severity: "info",
+          target: `${prompt.name}.${arg.name}`,
+          rule: "prompt-arg-missing-description",
+          message: `Argument "${arg.name}" on prompt "${prompt.name}" has no description.`,
+        });
+      }
     }
   }
   return findings;

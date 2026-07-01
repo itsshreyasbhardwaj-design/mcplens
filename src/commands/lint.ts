@@ -1,6 +1,6 @@
 import chalk from "chalk";
-import { connectStdio, parseServerTarget } from "../connector.js";
-import { lintResources, lintTools, severityRank, type LintFinding } from "../linter.js";
+import { connectServer, parseServerTarget } from "../connector.js";
+import { lintPrompts, lintResources, lintTools, severityRank, type LintFinding } from "../linter.js";
 
 const SEVERITY_COLOR: Record<LintFinding["severity"], (s: string) => string> = {
   error: chalk.red,
@@ -10,17 +10,20 @@ const SEVERITY_COLOR: Record<LintFinding["severity"], (s: string) => string> = {
 
 export async function lintCommand(rawTarget: string, opts: { json?: boolean; failOn?: string }) {
   const target = parseServerTarget(rawTarget);
-  const { client, disconnect } = await connectStdio(target);
+  const { client, disconnect } = await connectServer(target);
 
   try {
-    const [toolsRes, resourcesRes] = await Promise.all([
+    const [toolsRes, resourcesRes, promptsRes] = await Promise.all([
       client.listTools().catch(() => ({ tools: [] })),
       client.listResources().catch(() => ({ resources: [] })),
+      client.listPrompts().catch(() => ({ prompts: [] })),
     ]);
 
-    const findings = [...lintTools(toolsRes.tools), ...lintResources(resourcesRes.resources)].sort(
-      (a, b) => severityRank(a.severity) - severityRank(b.severity)
-    );
+    const findings = [
+      ...lintTools(toolsRes.tools),
+      ...lintResources(resourcesRes.resources),
+      ...lintPrompts(promptsRes.prompts),
+    ].sort((a, b) => severityRank(a.severity) - severityRank(b.severity));
 
     if (opts.json) {
       console.log(JSON.stringify(findings, null, 2));

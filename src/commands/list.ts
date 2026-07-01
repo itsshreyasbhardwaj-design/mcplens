@@ -1,9 +1,9 @@
 import chalk from "chalk";
-import { connectStdio, parseServerTarget } from "../connector.js";
+import { connectServer, parseServerTarget } from "../connector.js";
 
 export async function listCommand(rawTarget: string, opts: { json?: boolean }) {
   const target = parseServerTarget(rawTarget);
-  const { client, disconnect } = await connectStdio(target);
+  const { client, disconnect } = await connectServer(target);
 
   try {
     const [tools, resources, prompts] = await Promise.all([

@@ -32,7 +32,12 @@ node dist/cli.js --help
 
 ## Usage
 
-All commands take a server target — the shell command used to launch your MCP server over stdio, as a single quoted string.
+All commands take a server target — either the shell command used to launch your MCP server over stdio (as a single quoted string), or an `http://`/`https://` URL for a server speaking Streamable HTTP or SSE:
+
+```bash
+mcplens list "node my-server.js"
+mcplens list "http://localhost:3000/mcp"
+```
 
 ### `list` — see what a server exposes
 
@@ -134,7 +139,7 @@ Exits non-zero on any divergence, so it drops straight into CI.
 
 ## Status
 
-Early — stdio transport only, no HTTP/SSE support yet, and the lint rule set is intentionally small and easy to extend. Contributions and issue reports are welcome.
+Early — the lint rule set is intentionally small and easy to extend. Contributions and issue reports are welcome.
 
 ## License
 
