@@ -23,7 +23,7 @@ npm install -g mcplens
 Or run from source:
 
 ```bash
-git clone https://github.com/<you>/mcplens.git
+git clone https://github.com/itsshreyasbhardwaj-design/mcplens.git
 cd mcplens
 npm install
 npm run build
