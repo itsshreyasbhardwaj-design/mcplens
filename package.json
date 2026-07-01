@@ -21,11 +21,11 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/shreyasbhardwaj/mcplens.git"
+    "url": "git+https://github.com/itsshreyasbhardwaj-design/mcplens.git"
   },
-  "homepage": "https://github.com/shreyasbhardwaj/mcplens#readme",
+  "homepage": "https://github.com/itsshreyasbhardwaj-design/mcplens#readme",
   "bugs": {
-    "url": "https://github.com/shreyasbhardwaj/mcplens/issues"
+    "url": "https://github.com/itsshreyasbhardwaj-design/mcplens/issues"
   },
   "author": "Shreyas Bhardwaj",
   "scripts": {

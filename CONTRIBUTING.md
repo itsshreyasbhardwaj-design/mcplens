@@ -5,7 +5,7 @@ Thanks for considering a contribution. This project is small and intentionally s
 ## Getting started
 
 ```bash
-git clone https://github.com/shreyasbhardwaj/mcplens.git
+git clone https://github.com/itsshreyasbhardwaj-design/mcplens.git
 cd mcplens
 npm install
 npm run build
